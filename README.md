@@ -13,3 +13,26 @@ When possible, IPs will be provided with test benches.
 | data_loader_8.v  | Converts APF writes into four bytes                                                                                 |
 | data_loader_16.v | Converts APF writes into two bytes                                                                                  |
 | hex_loader.v     | Converts APF writes representing a hex file into bytes. Can be converted for use outside of APF. Has an involved TB |
+
+## Tools
+
+### Image Processing
+
+* https://github.com/agg23/Analogue-Pocket-Image-Process - Small Node project to create and extract APF image bins
+* https://github.com/codewario/PocketLibraryImageConversion - PS script to generate Library thumbnails
+
+### Updaters
+
+* https://github.com/mattpannella/pocket_core_autoupdate_net - C# updater
+* https://github.com/rivergillis/update-pocket - Python updater
+
+## Cores
+
+Only open source cores are provided here. You can see the complete list at https://strt-slct.com/openfpga/
+
+| Core    | Author      | URL                                                                                     |
+|---------|-------------|-----------------------------------------------------------------------------------------|
+| Arduboy | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-arduboy             |
+| Neo Geo | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
+| PDP-1   | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
+| Pong    | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
