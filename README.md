@@ -2,6 +2,8 @@
 
 A collection of useful IP and information on how to develop [openFPGA](https://www.analogue.co/developer/docs/overview) cores for the [Analogue Pocket](https://www.analogue.co/pocket).
 
+For tips, tricks, and various learnings from a software dev's perspective, [check out the wiki](../../wiki).
+
 ## IP
 
 When possible, IPs will be provided with test benches.
