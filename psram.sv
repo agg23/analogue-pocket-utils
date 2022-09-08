@@ -193,11 +193,15 @@ module psram #(
     $info("    STATE_WRITE_ADDR_LATCH_END: %d", STATE_WRITE_ADDR_LATCH_END);
     $info("    STATE_WRITE_DATA_START: %d", STATE_WRITE_DATA_START);
     $info("    STATE_WRITE_DATA_END: %d", STATE_WRITE_DATA_END);
+    $info("");
+    $info("  Total write time: %d cycles", TOTAL_WRITE_CYCLE_COUNT);
     $info("  Reads:");
     $info("    STATE_READ_ADV_END: %d", STATE_READ_ADV_END);
     $info("    STATE_READ_ADDR_LATCH_END: %d", STATE_READ_ADDR_LATCH_END);
     $info("    STATE_READ_DATA_ENABLE: %d", STATE_READ_DATA_ENABLE);
     $info("    STATE_READ_DATA_RECEIVED: %d", STATE_READ_DATA_RECEIVED);
+    $info("");
+    $info("  Total read time: %d cycles", TOTAL_READ_CYCLE_COUNT);
   end
 
   reg [7:0] state = STATE_NONE;
