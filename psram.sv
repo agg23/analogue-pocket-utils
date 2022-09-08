@@ -310,6 +310,9 @@ module psram #(
 
         cram_ub_n <= 1;
         cram_lb_n <= 1;
+
+        // Clear busy now, so we don't have to wait for the state change
+        busy <= 0;
       end
 
       // Reads
@@ -340,6 +343,9 @@ module psram #(
         cram_lb_n <= 1;
 
         cram_oe_n <= 1;
+
+        // Clear busy now, so we don't have to wait for the state change
+        busy <= 0;
       end
     endcase
   end
