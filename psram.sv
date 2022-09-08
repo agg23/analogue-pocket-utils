@@ -37,6 +37,8 @@ module psram #(
     output reg read_avail,
     output reg [15:0] data_out,
 
+    output reg busy,
+
     // PSRAM signals
     output reg [21:16] cram_a,
     inout wire [15:0] cram_dq,
@@ -214,9 +216,26 @@ module psram #(
       state <= state + 1;
     end
 
+    if (state == STATE_NONE) begin
+      // We are only busy when not in STATE_NONE
+      busy <= 0;
+    end else begin
+      busy <= 1;
+    end
+
     case (state)
       STATE_NONE: begin
         read_avail <= 0;
+
+        cram_clk   <= 0;
+        cram_adv_n <= 1;
+        cram_cre   <= 0;
+        cram_ce0_n <= 1;
+        cram_ce1_n <= 1;
+        cram_oe_n  <= 1;
+        cram_we_n  <= 1;
+        cram_ub_n  <= 1;
+        cram_lb_n  <= 1;
 
         if (write_en) begin
           // Enter write_init
@@ -239,6 +258,9 @@ module psram #(
           cram_adv_n <= 0;
           cram_ub_n <= 0;
           cram_lb_n <= 0;
+
+          // Set busy now instead of waiting for the state change
+          busy <= 1;
         end else if (read_en) begin
           state <= READ_INITIAL_COUNT;
 
@@ -255,6 +277,9 @@ module psram #(
           cram_adv_n <= 0;
           cram_ub_n <= 0;
           cram_lb_n <= 0;
+
+          // Set busy now instead of waiting for the state change
+          busy <= 1;
         end
       end
 
