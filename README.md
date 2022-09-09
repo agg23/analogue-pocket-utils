@@ -29,7 +29,7 @@ When possible, IPs will be provided with test benches.
 
 ## Cores
 
-Only open source cores are provided here. You can see the complete list at https://strt-slct.com/openfpga/
+Only open source cores are provided here. You can see the complete list at https://joshcampbell191.github.io/openfpga-cores-inventory/analogue-pocket.html
 
 | Core    | Author      | URL                                                                                     |
 |---------|-------------|-----------------------------------------------------------------------------------------|
