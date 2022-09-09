@@ -32,6 +32,8 @@ module psram #(
 
     input wire write_en,
     input wire [15:0] data_in,
+    input wire write_high_byte,
+    input wire write_low_byte,
 
     input wire read_en,
     output reg read_avail,
@@ -260,8 +262,9 @@ module psram #(
 
           // Enable address latching
           cram_adv_n <= 0;
-          cram_ub_n <= 0;
-          cram_lb_n <= 0;
+
+          if (write_high_byte) cram_ub_n <= 0;
+          if (write_low_byte) cram_lb_n <= 0;
 
           // Set busy now instead of waiting for the state change
           busy <= 1;
