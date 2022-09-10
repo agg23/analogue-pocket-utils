@@ -31,10 +31,11 @@ When possible, IPs will be provided with test benches.
 
 Only open source cores are provided here. You can see the complete list at https://joshcampbell191.github.io/openfpga-cores-inventory/analogue-pocket.html
 
-| Core    | Author      | URL                                                                                     |
-|---------|-------------|-----------------------------------------------------------------------------------------|
-| Arduboy | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-arduboy             |
-| Neo Geo | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
-| PDP-1   | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
-| Pong    | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
-| Tecmo   | [nullobject](https://github.com/nullobject)   | https://github.com/nullobject/openfpga-tecmo          |
+| Core       | Author      | URL                                                                                     |
+|------------|-------------|-----------------------------------------------------------------------------------------|
+| Arduboy    | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-arduboy             |
+| Neo Geo    | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
+| PDP-1      | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
+| Pong       | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
+| Space Race | [ericlewis](https://github.com/ericlewis)  | https://github.com/ericlewis/openfpga-spacerace          |
+| Tecmo      | [nullobject](https://github.com/nullobject)   | https://github.com/nullobject/openfpga-tecmo          |
