@@ -22,6 +22,9 @@
 //
 ////////////////////////////////////////////////////////////////////////////////
 
+// NOTE: The data loader 8 is more up to date than this component at the moment.
+// I recommend you look at it instead
+//
 // A data loader for consuming APF bridge writes and directing them to some storage medium
 //
 // This takes the 32 bit words from APF, and splits it into two 16 bit words

@@ -25,17 +25,25 @@
 // A data loader for consuming APF bridge writes and directing them to some storage medium
 //
 // This takes the 32 bit words from APF, and splits it into four bytes. You can configure the cycle delay
-// by setting WRITE_OUTPUT_CLOCK_DELAY
+// by setting WRITE_MEM_CLOCK_DELAY
 module data_loader_8 #(
     // Upper 4 bits of address
-    parameter ADDRESS_MASK_UPPER_4,
+    parameter ADDRESS_MASK_UPPER_4 = 0,
     parameter ADDRESS_SIZE = 14,
-    // Number of clk_74a cycles to delay each write output. Allow up to 255 cycle delay
-    // (though the APF will move data faster than that, so don't actually set the delay that high)
-    parameter WRITE_OUTPUT_MAIN_CLOCK_DELAY = 10
+
+    // Number of clk_memory cycles to delay each write output.
+    // Be aware that APF sends data every ~75 74MHz cycles, so you cannot send data slower than this
+    parameter WRITE_MEM_CLOCK_DELAY = 10,
+
+    // Number of clk_memory cycles to hold the write_en signal high
+    parameter WRITE_MEM_EN_CYCLE_LENGTH = 1
 ) (
     input wire clk_74a,
     input wire clk_memory,
+
+    // DO NOT USE THE CORE RESET SIGNAL
+    // That signal only goes high after data finishes loading, but you are using this to load data
+    input wire reset_n,
 
     input wire bridge_wr,
     input wire bridge_endian_little,
@@ -43,92 +51,122 @@ module data_loader_8 #(
     input wire [31:0] bridge_wr_data,
 
     // These outputs are synced to the memory clock
-    output wire write_en,
-    output wire [ADDRESS_SIZE:0] write_addr,
-    output wire [7:0] write_data
+    output reg write_en,
+    output reg [ADDRESS_SIZE:0] write_addr,
+    output reg [7:0] write_data
 );
 
-  localparam WRITE_EN_LENGTH = WRITE_OUTPUT_MAIN_CLOCK_DELAY / 2;
+  reg start_memory_write;
+  reg [1:0] start_memory_write_count;
+  reg [ADDRESS_SIZE:0] buffered_addr;
+  reg [31:0] buffered_data;
 
-  // Output without sync
-  reg int_write_en;
-  reg [ADDRESS_SIZE:0] int_write_addr;
-  reg [7:0] int_write_data;
+  wire start_memory_write_s;
+  wire [ADDRESS_SIZE:0] buffered_addr_s;
+  wire [31:0] buffered_data_s;
 
-  synch_3 en_s (
-      int_write_en,
-      write_en,
+  synch_3 start_write_s (
+      start_memory_write,
+      start_memory_write_s,
       clk_memory
   );
 
   synch_3 #(
       .WIDTH(ADDRESS_SIZE + 1)
   ) addr_s (
-      int_write_addr,
-      write_addr,
+      buffered_addr,
+      buffered_addr_s,
       clk_memory
   );
 
   synch_3 #(
-      .WIDTH(8)
+      .WIDTH(32)
   ) data_s (
-      int_write_data,
-      write_data,
+      buffered_data,
+      buffered_data_s,
       clk_memory
   );
 
-  reg [1:0] bridge_write_byte = 0;
-  reg [7:0] bridge_write_delay_count = 0;
-
-  reg [31:0] cached_addr;
-  reg [7:0] cached_data[2:0];
-
+  // Receive APF writes and buffer them into the memory clock domain
   always @(posedge clk_74a) begin
-    if (bridge_write_delay_count < WRITE_EN_LENGTH) begin
-      // Leave write_en on for WRITE_EN_LENGTH
-      int_write_en <= 0;
-    end
+    if (~reset_n) begin
+      start_memory_write <= 0;
+    end else if (bridge_wr && bridge_addr[31:28] == ADDRESS_MASK_UPPER_4) begin
+      // Set up buffered writes
+      start_memory_write <= 1;
+      start_memory_write_count <= 3;
 
-    if (bridge_write_delay_count != 0) begin
-      bridge_write_delay_count <= bridge_write_delay_count - 1;
-    end
+      buffered_addr <= bridge_addr[ADDRESS_SIZE:0];
 
-    if((bridge_wr && bridge_addr[31:28] == ADDRESS_MASK_UPPER_4) || (bridge_write_byte != 0 && bridge_write_delay_count == 0))
-    begin
-      reg [ADDRESS_SIZE:0] addr_temp;
-
-      int_write_en <= 1;
-
-      // TODO: Can this be removed?
-      addr_temp = (bridge_write_byte != 0 ? cached_addr : bridge_addr);
-      int_write_addr <= addr_temp + bridge_write_byte;
-
-      if (bridge_write_byte != 0) begin
-        // High 3 bytes
-        // First byte in cache will have bridge_write_byte = 1
-        int_write_data <= cached_data[bridge_write_byte-1];
-
-        bridge_write_delay_count <= WRITE_OUTPUT_MAIN_CLOCK_DELAY;
-
-        bridge_write_byte <= bridge_write_byte + 1;
+      if (bridge_endian_little) begin
+        buffered_data <= bridge_wr_data;
       end else begin
-        // First (low) byte
-        int_write_data <= bridge_endian_little ? bridge_wr_data[7:0] : {bridge_wr_data[31:24]};
+        buffered_data <= {
+          bridge_wr_data[7:0], bridge_wr_data[15:8], bridge_wr_data[23:16], bridge_wr_data[31:24]
+        };
+      end
+    end else begin
+      start_memory_write_count <= start_memory_write_count - 1;
 
-        // Set up buffered writes
-        bridge_write_byte <= 1;
-        bridge_write_delay_count <= WRITE_OUTPUT_MAIN_CLOCK_DELAY;
+      if (start_memory_write_count == 0) begin
+        start_memory_write <= 0;
+      end
+    end
+  end
 
-        cached_addr <= bridge_addr;
-        if (bridge_endian_little) begin
-          cached_data[0] <= bridge_wr_data[15:8];
-          cached_data[1] <= bridge_wr_data[23:16];
-          cached_data[2] <= bridge_wr_data[31:24];
-        end else begin
-          cached_data[0] <= bridge_wr_data[23:16];
-          cached_data[1] <= bridge_wr_data[15:8];
-          cached_data[2] <= bridge_wr_data[7:0];
+  reg prev_has_data;
+  reg needs_write_data;
+  reg [1:0] write_byte;
+  reg [7:0] write_delay_count;
+  reg [31:0] data_shift_buffer;
+
+  // Consume buffered and synced data, sending out to memory
+  always @(posedge clk_memory) begin
+    if (~reset_n) begin
+      prev_has_data <= 0;
+      needs_write_data <= 0;
+      write_byte <= 0;
+      write_delay_count <= 0;
+
+      write_addr <= 0;
+      write_data <= 0;
+      write_en <= 0;
+    end else begin
+      prev_has_data <= start_memory_write_s;
+
+      if (~prev_has_data && start_memory_write_s) begin
+        // Newly received buffer data
+        needs_write_data <= 1;
+        write_byte <= 0;
+        write_delay_count <= 0;
+        // ack_memory_write <= 1;
+
+        data_shift_buffer <= buffered_data_s;
+      end
+
+      if (write_delay_count != 0) begin
+        write_delay_count <= write_delay_count - 1;
+      end
+
+      if (write_delay_count <= WRITE_MEM_CLOCK_DELAY - WRITE_MEM_EN_CYCLE_LENGTH) begin
+        // Leave write_en on for WRITE_MEM_EN_CYCLE_LENGTH
+        write_en <= 0;
+      end
+
+      if (needs_write_data && write_delay_count == 0) begin
+        write_delay_count <= WRITE_MEM_CLOCK_DELAY - 1;
+        write_en <= 1;
+
+        if (write_byte == 3) begin
+          needs_write_data <= 0;
         end
+
+        write_addr <= buffered_addr_s + write_byte;
+
+        write_data <= data_shift_buffer[7:0];
+
+        write_byte <= write_byte + 1;
+        data_shift_buffer <= data_shift_buffer[31:8];
       end
     end
   end
