@@ -24,9 +24,9 @@
 
 // A data loader for consuming APF bridge writes and directing them to some storage medium
 //
-// This takes the 32 bit words from APF, and splits it into four bytes. You can configure the cycle delay
-// by setting WRITE_MEM_CLOCK_DELAY
-module data_loader_8 #(
+// This takes the 32 bit words from APF, and splits it into four / OUTPUT_WORD_SIZE words (4 separate bytes, or 2 16-bit words).
+// You can configure the cycle delay by setting WRITE_MEM_CLOCK_DELAY
+module data_loader #(
     // Upper 4 bits of address
     parameter ADDRESS_MASK_UPPER_4 = 0,
     parameter ADDRESS_SIZE = 14,
@@ -36,7 +36,10 @@ module data_loader_8 #(
     parameter WRITE_MEM_CLOCK_DELAY = 10,
 
     // Number of clk_memory cycles to hold the write_en signal high
-    parameter WRITE_MEM_EN_CYCLE_LENGTH = 1
+    parameter WRITE_MEM_EN_CYCLE_LENGTH = 1,
+
+    // Word size in number of bytes. Can either be 1 (output 8 bits), or 2 (output 16 bits)
+    parameter OUTPUT_WORD_SIZE = 1
 ) (
     input wire clk_74a,
     input wire clk_memory,
@@ -53,8 +56,10 @@ module data_loader_8 #(
     // These outputs are synced to the memory clock
     output reg write_en,
     output reg [ADDRESS_SIZE:0] write_addr,
-    output reg [7:0] write_data
+    output reg [8 * OUTPUT_WORD_SIZE - 1:0] write_data
 );
+
+  localparam WORD_SIZE = 8 * OUTPUT_WORD_SIZE;
 
   reg start_memory_write;
   reg [1:0] start_memory_write_count;
@@ -157,16 +162,16 @@ module data_loader_8 #(
         write_delay_count <= WRITE_MEM_CLOCK_DELAY - 1;
         write_en <= 1;
 
-        if (write_byte == 3) begin
+        if (write_byte == (4 / OUTPUT_WORD_SIZE) - 1) begin
           needs_write_data <= 0;
         end
 
-        write_addr <= buffered_addr_s + write_byte;
+        write_addr <= buffered_addr_s + (write_byte * OUTPUT_WORD_SIZE);
 
-        write_data <= data_shift_buffer[7:0];
+        write_data <= data_shift_buffer[WORD_SIZE-1:0];
 
         write_byte <= write_byte + 1;
-        data_shift_buffer <= data_shift_buffer[31:8];
+        data_shift_buffer <= data_shift_buffer[31:WORD_SIZE];
       end
     end
   end

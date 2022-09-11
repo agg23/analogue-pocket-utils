@@ -1,6 +1,6 @@
 `timescale 1 ns / 10 ps  // time-unit = 1 ns, precision = 10 ps
 
-module data_loader_8_tb;
+module data_loader_16_tb;
   reg clk_74a = 0;
   reg clk_memory = 0;
 
@@ -20,9 +20,9 @@ module data_loader_8_tb;
 
   wire write_en;
   wire [14:0] write_addr;
-  wire [7:0] write_data;
+  wire [15:0] write_data;
 
-  data_loader data_loader (
+  data_loader #(.OUTPUT_WORD_SIZE(2)) data_loader (
       .clk_74a(clk_74a),
       .clk_memory(clk_memory),
 
@@ -38,7 +38,7 @@ module data_loader_8_tb;
       .write_data(write_data)
   );
 
-  task test_byte(input [14:0] addr, input [7:0] data);
+  task test_word(input [14:0] addr, input [15:0] data);
     begin
           assert (write_en == 1)
           else $error("write_en didn't go high");
@@ -109,16 +109,10 @@ module data_loader_8_tb;
 
     // After 4 mem periods (3 to sync, 1 to write), we should start seeing data
     #(4 * period_mem);
-    test_byte(15'hC, 8'hAA);
+    test_word(15'hC, 16'hBBAA);
   
     #period_mem;
-    test_byte(15'hD, 8'hBB);
-
-    #period_mem;
-    test_byte(15'hE, 8'hCC);
-
-    #period_mem;
-    test_byte(15'hF, 8'hDD);
+    test_word(15'hE, 16'hDDCC);
 
     $display("Sending second word");
 
@@ -139,16 +133,10 @@ module data_loader_8_tb;
 
     // After 3 mem periods, we should start seeing data
     #(3 * period_mem);
-    test_byte(15'h20, 8'hFF);
+    test_word(15'h20, 16'hEEFF);
   
     #period_mem;
-    test_byte(15'h21, 8'hEE);
-
-    #period_mem;
-    test_byte(15'h22, 8'hDD);
-
-    #period_mem;
-    test_byte(15'h23, 8'hCC);
+    test_word(15'h22, 16'hCCDD);
 
     $stop;
   end
