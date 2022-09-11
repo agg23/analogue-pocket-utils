@@ -11,8 +11,7 @@ When possible, IPs will be provided with test benches.
 | HDL File         | Usage                                                                                                               |
 |------------------|---------------------------------------------------------------------------------------------------------------------|
 | mem/psram.sv     | Generic PSRAM controller, configured with timing for the Pocket's PSRAM. Supports synchronous access in async mode  |
-| data_loader_8.v  | Converts APF writes into four bytes                                                                                 |
-| data_loader_16.v | Converts APF writes into two bytes                                                                                  |
+| data_loader.v    | Converts APF writes into configurable single or two byte words. TB tests both 8 and 16 bit writes                   |
 | hex_loader.v     | Converts APF writes representing a hex file into bytes. Can be converted for use outside of APF. Has an involved TB |
 
 ## Tools
