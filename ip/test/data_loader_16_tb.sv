@@ -10,8 +10,6 @@ module data_loader_16_tb;
   localparam period_mem = 10;
   localparam half_period_mem = period_mem / 2;
 
-  reg reset_n;
-
   // APF bridge lines
   reg bridge_wr;
   reg bridge_endian_little;
@@ -25,8 +23,6 @@ module data_loader_16_tb;
   data_loader #(.OUTPUT_WORD_SIZE(2)) data_loader (
       .clk_74a(clk_74a),
       .clk_memory(clk_memory),
-
-      .reset_n(reset_n),
 
       .bridge_wr(bridge_wr),
       .bridge_endian_little(bridge_endian_little),
@@ -57,10 +53,6 @@ module data_loader_16_tb;
 
           assert (write_en == 0)
           else $error("write_en didn't stay low");
-          assert (write_addr == addr)
-          else $error("write_addr wasn't 0x%h", addr);
-          assert (write_data == data)
-          else $error("write_data wasn't 0x%h", data);
     end
   endtask
 
@@ -73,16 +65,12 @@ module data_loader_16_tb;
   end
 
   initial begin
-    reset_n = 0;
-
     bridge_wr = 0;
     bridge_endian_little = 0;
     bridge_addr = 0;
     bridge_wr_data = 0;
 
     #period;
-
-    reset_n = 1;
 
     #(10 * period);
 
@@ -107,8 +95,8 @@ module data_loader_16_tb;
     assert (write_en == 0)
     else $error("write_en changed");
 
-    // After 4 mem periods (3 to sync, 1 to write), we should start seeing data
-    #(4 * period_mem);
+    // After 9 mem periods, we should start seeing data
+    #(9 * period_mem);
     test_word(15'hC, 16'hBBAA);
   
     #period_mem;
@@ -131,8 +119,8 @@ module data_loader_16_tb;
     assert (write_en == 0)
     else $error("write_en changed");
 
-    // After 3 mem periods, we should start seeing data
-    #(3 * period_mem);
+    // After 9 mem periods, we should start seeing data
+    #(9 * period_mem);
     test_word(15'h20, 16'hEEFF);
   
     #period_mem;
