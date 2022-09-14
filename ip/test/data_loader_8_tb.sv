@@ -43,13 +43,13 @@ module data_loader_8_tb;
           assert (write_data == data)
           else $error("write_data wasn't 0x%h. Received 0x%h", data, write_data);
 
-          // We should continue seeing this data for 9 more cycles, with write_en dropping after 1
+          // We should continue seeing this data for 3 more cycles, with write_en dropping after 1
           #period_mem;
 
           assert (write_en == 0)
           else $error("write_en didn't drop");
 
-          #(8 * period_mem);
+          #(2 * period_mem);
 
           assert (write_en == 0)
           else $error("write_en didn't stay low");

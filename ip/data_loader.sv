@@ -31,14 +31,17 @@ module data_loader #(
     parameter ADDRESS_MASK_UPPER_4 = 0,
     parameter ADDRESS_SIZE = 14,
 
-    // Number of clk_memory cycles to delay each write output.
+    // Number of clk_memory cycles to delay each write output
+    // Min 4. Component will assert this value is within the valid range
     // Be aware that APF sends data every ~75 74MHz cycles, so you cannot send data slower than this
-    parameter WRITE_MEM_CLOCK_DELAY = 10,
+    parameter WRITE_MEM_CLOCK_DELAY = 4,
 
     // Number of clk_memory cycles to hold the write_en signal high
+    // Min 1. Component will assert this value is within the valid range
     parameter WRITE_MEM_EN_CYCLE_LENGTH = 1,
 
     // Word size in number of bytes. Can either be 1 (output 8 bits), or 2 (output 16 bits)
+    // Component will assert this value is within the valid range
     parameter OUTPUT_WORD_SIZE = 1
 ) (
     input wire clk_74a,
@@ -54,6 +57,8 @@ module data_loader #(
     output reg [ADDRESS_SIZE:0] write_addr = 0,
     output reg [8 * OUTPUT_WORD_SIZE - 1:0] write_data = 0
 );
+
+  `define MAX(x, y) ((x > y) ? x : y)
 
   localparam WORD_SIZE = 8 * OUTPUT_WORD_SIZE;
 
@@ -153,7 +158,11 @@ module data_loader #(
   localparam READ_DELAY = 1;
   localparam READ_WRITE = 2;
   localparam READ_WRITE_EN_CYCLE_OFF = READ_WRITE + WRITE_MEM_EN_CYCLE_LENGTH;
-  localparam READ_WRITE_END = WRITE_MEM_CLOCK_DELAY - 1;
+  localparam READ_WRITE_END_DEFAULT = WRITE_MEM_CLOCK_DELAY - 1;
+  // Must use max to prevent READ_WRITE_END from being the same as READ_WRITE_EN_CYCLE_OFF
+  localparam READ_WRITE_END =
+  `MAX(READ_WRITE_END_DEFAULT, READ_WRITE_EN_CYCLE_OFF + 1);
+  localparam HAS_DELAY = READ_WRITE_END_DEFAULT > READ_WRITE_EN_CYCLE_OFF;
 
   always @(posedge clk_memory) begin
     if (read_state != 0) begin
@@ -167,6 +176,7 @@ module data_loader #(
     case (read_state)
       READ_DELAY: begin
         read_req <= 0;
+        write_en <= 0;
       end
       READ_WRITE: begin
         //  Read data is available
@@ -181,6 +191,11 @@ module data_loader #(
       end
       READ_WRITE_EN_CYCLE_OFF: begin
         write_en <= 0;
+
+        if (!HAS_DELAY) begin
+          // No extra delay, immediately go back to start
+          read_state <= 0;
+        end
       end
       READ_WRITE_END: begin
         read_state <= 0;
@@ -190,14 +205,14 @@ module data_loader #(
 
   initial begin
     // Verify parameters
-    if (WRITE_MEM_CLOCK_DELAY < 7) begin
-      $error("WRITE_MEM_CLOCK_DELAY has a minimum value of 7. Received %d", WRITE_MEM_CLOCK_DELAY);
+    if (WRITE_MEM_CLOCK_DELAY < 4) begin
+      $error("WRITE_MEM_CLOCK_DELAY has a minimum value of 4. Received %d", WRITE_MEM_CLOCK_DELAY);
     end
 
-    if (WRITE_MEM_EN_CYCLE_LENGTH < 1 || WRITE_MEM_EN_CYCLE_LENGTH >= READ_WRITE_END - READ_WRITE) begin
+    if (WRITE_MEM_EN_CYCLE_LENGTH < 1 || WRITE_MEM_EN_CYCLE_LENGTH >= WRITE_MEM_CLOCK_DELAY - 2) begin
       $error(
           "WRITE_MEM_EN_CYCLE_LENGTH must be between 1 and %d (inclusive, based off of WRITE_MEM_CLOCK_DELAY). Received %d",
-          READ_WRITE_END - READ_WRITE - 1, WRITE_MEM_EN_CYCLE_LENGTH);
+          WRITE_MEM_CLOCK_DELAY - 2 - 1, WRITE_MEM_EN_CYCLE_LENGTH);
     end
 
     if (OUTPUT_WORD_SIZE < 1 || OUTPUT_WORD_SIZE > 2) begin

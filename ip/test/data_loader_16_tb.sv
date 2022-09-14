@@ -49,7 +49,7 @@ module data_loader_16_tb;
           assert (write_en == 0)
           else $error("write_en didn't drop");
 
-          #(8 * period_mem);
+          #(2 * period_mem);
 
           assert (write_en == 0)
           else $error("write_en didn't stay low");
