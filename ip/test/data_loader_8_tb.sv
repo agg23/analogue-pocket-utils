@@ -70,8 +70,6 @@ module data_loader_8_tb;
     bridge_addr = 0;
     bridge_wr_data = 0;
 
-    #period;
-
     #(10 * period);
 
     // Nothing should be output
