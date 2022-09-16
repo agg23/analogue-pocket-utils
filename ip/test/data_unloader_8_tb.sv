@@ -64,7 +64,7 @@ module data_unloader_8_tb;
 
   initial begin
     bridge_rd = 0;
-    bridge_endian_little = 0;
+    bridge_endian_little = 1;
     bridge_addr = 0;
 
     #(10 * period);

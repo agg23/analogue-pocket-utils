@@ -64,7 +64,7 @@ module data_unloader_16_tb;
 
   initial begin
     bridge_rd = 0;
-    bridge_endian_little = 0;
+    bridge_endian_little = 1;
     bridge_addr = 0;
 
     #(10 * period);
@@ -100,13 +100,13 @@ module data_unloader_16_tb;
     // Data should be available for reading by APF
     #(5 * period);
 
-    assert (bridge_rd_data == 32'hDDCCBBAA)
+    assert (bridge_rd_data == 32'hCCDDAABB)
     else $error("bridge_rd_data was not correct");
 
     // Data should be held until new data is provided
     #(20 * period);
 
-    assert (bridge_rd_data == 32'hDDCCBBAA)
+    assert (bridge_rd_data == 32'hCCDDAABB)
     else $error("bridge_rd_data was not held");
 
     $display("Sending second request");
@@ -127,16 +127,16 @@ module data_unloader_16_tb;
     #(8 * period_mem);
 
     // Address data should appear in memory domain and it should begin requesting the memory
-    test_send_byte(28'h124, 16'hDDCC);
+    test_send_byte(28'h124, 16'hBBAA);
     #(4 * period_mem);
 
-    test_send_byte(28'h126, 16'hBBAA);
+    test_send_byte(28'h126, 16'hDDCC);
     #(4 * period_mem);
 
     // Data should be available for reading by APF
     #(5 * period);
 
-    assert (bridge_rd_data == 32'hAABBCCDD)
+    assert (bridge_rd_data == 32'hDDCCBBAA)
     else $error("bridge_rd_data was not correct");
 
     $stop;

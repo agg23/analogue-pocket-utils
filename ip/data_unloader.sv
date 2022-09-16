@@ -167,7 +167,7 @@ module data_unloader #(
   reg [2:0] apf_data_count = 0;
   reg [31:0] apf_bridge_write_data = 0;
 
-  wire [31:0] apf_final_data = {apf_bridge_write_data[31:WORD_SIZE], fifo_data_out};
+  wire [31:0] apf_final_data = {fifo_data_out, apf_bridge_write_data[31-WORD_SIZE:0]};
 
   localparam READ_DATA_DELAY = 1;
   localparam READ_DATA_WRITE = 2;
@@ -189,7 +189,7 @@ module data_unloader #(
         data_read_req <= 0;
 
         // Shift current APF data
-        apf_bridge_write_data <= apf_bridge_write_data << WORD_SIZE;
+        apf_bridge_write_data <= apf_bridge_write_data >> WORD_SIZE;
       end
       READ_DATA_WRITE: begin
         // Data from memory is available
@@ -200,7 +200,7 @@ module data_unloader #(
 
           data_send_state <= 0;
         end else begin
-          apf_bridge_write_data[WORD_SIZE-1:0] <= fifo_data_out;
+          apf_bridge_write_data <= apf_final_data;
 
           data_read_req <= 1;
           data_send_state <= READ_DATA_DELAY;
