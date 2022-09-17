@@ -66,8 +66,8 @@ module sound_i2s #(
   //
   // synchronize audio samples coming from the core
 
-  localparam CHANNEL_RIGHT_HIGH = SIGNED_INPUT ? 16 : 15;
-  localparam CHANNEL_LEFT_HIGH = 16 + CHANNEL_RIGHT_HIGH;
+  localparam CHANNEL_LEFT_HIGH = SIGNED_INPUT ? 16 : 15;
+  localparam CHANNEL_RIGHT_HIGH = 16 + CHANNEL_LEFT_HIGH;
 
   wire [31:0] audgen_sampdata;
 
