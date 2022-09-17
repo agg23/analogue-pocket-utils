@@ -33,9 +33,9 @@ module sound_i2s #(
     input wire [CHANNEL_WIDTH - 1:0] audio_l,
     input wire [CHANNEL_WIDTH - 1:0] audio_r,
 
-    output reg audgen_mclk,
-    output reg audgen_lrck,
-    output reg audgen_dac
+    output reg audio_mclk,
+    output reg audio_lrck,
+    output reg audio_dac
 );
   //
   // audio i2s generator
@@ -49,7 +49,7 @@ module sound_i2s #(
   always @(posedge clk_74a) begin
     audgen_accum <= audgen_accum + CYCLE_48KHZ;
     if (audgen_accum >= 21'd742500) begin
-      audgen_mclk  <= ~audgen_mclk;
+      audio_mclk   <= ~audio_mclk;
       audgen_accum <= audgen_accum - 21'd742500 + CYCLE_48KHZ;
     end
   end
@@ -57,7 +57,7 @@ module sound_i2s #(
   // generate SCLK = 3.072mhz by dividing MCLK by 4
   reg [1:0] aud_mclk_divider;
   wire audgen_sclk = aud_mclk_divider[1]  /* synthesis keep*/;
-  always @(posedge audgen_mclk) begin
+  always @(posedge audio_mclk) begin
     aud_mclk_divider <= aud_mclk_divider + 1'b1;
   end
 
@@ -71,16 +71,21 @@ module sound_i2s #(
 
   wire [31:0] audgen_sampdata;
 
-  assign audgen_sampdata[CHANNEL_LEFT_HIGH-1:CHANNEL_LEFT_HIGH-CHANNEL_WIDTH] = audio_l;
-  assign audgen_sampdata[31-CHANNEL_WIDTH:16] = 0;
+  assign audgen_sampdata[CHANNEL_LEFT_HIGH-1:CHANNEL_LEFT_HIGH-CHANNEL_WIDTH]   = audio_l;
   assign audgen_sampdata[CHANNEL_RIGHT_HIGH-1:CHANNEL_RIGHT_HIGH-CHANNEL_WIDTH] = audio_r;
-  assign audgen_sampdata[15-CHANNEL_WIDTH:0] = 0;
 
   generate
-    if (~SIGNED_INPUT) begin
+    if (!SIGNED_INPUT) begin
       // If not signed, make sure high bit is 0
       assign audgen_sampdata[31] = 0;
       assign audgen_sampdata[15] = 0;
+    end
+  endgenerate
+
+  generate
+    if (31 - CHANNEL_WIDTH > 16) begin
+      assign audgen_sampdata[31-CHANNEL_WIDTH:16] = 0;
+      assign audgen_sampdata[15-CHANNEL_WIDTH:0]  = 0;
     end
   endgenerate
 
@@ -93,22 +98,22 @@ module sound_i2s #(
       audgen_sclk
   );
   reg [31:0] audgen_sampshift;
-  reg [ 4:0] audgen_lrck_cnt;
+  reg [ 4:0] audio_lrck_cnt;
   always @(negedge audgen_sclk) begin
     // output the next bit
-    audgen_dac <= audgen_sampshift[31];
+    audio_dac <= audgen_sampshift[31];
 
     // 48khz * 64
-    audgen_lrck_cnt <= audgen_lrck_cnt + 1'b1;
-    if (audgen_lrck_cnt == 31) begin
+    audio_lrck_cnt <= audio_lrck_cnt + 1'b1;
+    if (audio_lrck_cnt == 31) begin
       // switch channels
-      audgen_lrck <= ~audgen_lrck;
+      audio_lrck <= ~audio_lrck;
 
       // Reload sample shifter
-      if (~audgen_lrck) begin
+      if (~audio_lrck) begin
         audgen_sampshift <= audgen_sampdata_s;
       end
-    end else if (audgen_lrck_cnt < 16) begin
+    end else if (audio_lrck_cnt < 16) begin
       // only shift for 16 clocks per channel
       audgen_sampshift <= {audgen_sampshift[30:0], 1'b0};
     end
