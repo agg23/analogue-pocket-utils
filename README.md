@@ -16,6 +16,25 @@ When possible, IPs will be provided with test benches.
 | hex_loader.v     | Converts APF writes representing a hex file into bytes. Can be converted for use outside of APF. Has an involved TB |
 | sound_i2s.sv     | Provides audio over the i2s bridge. Supports signed and unsigned audio                                              |
 
+### Debug Key
+This example demonstrates controlling the Debug Key's LED with the button also on the key.
+
+```verilog
+wire LED;
+wire button;
+
+assign LED = button;
+
+debug_key key (
+    .cart_tran_bank0_dir(cart_tran_bank0_dir),
+    .cart_tran_bank0(cart_tran_bank0),
+    .cart_tran_bank3_dir(cart_tran_bank3_dir),
+    .cart_tran_bank3(cart_tran_bank3),
+    .LED(LED),
+    .button(button)
+);
+```
+
 ## Tools
 
 ### Image Processing
