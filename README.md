@@ -17,6 +17,8 @@ When possible, IPs will be provided with test benches.
 | sound_i2s.sv     | Provides audio over the i2s bridge. Supports signed and unsigned audio                                              |
 
 ### Debug Key
+You must set `"cartridge_adapter": 0` in the `core.json` file, otherwise - the dev key doesn't work, and be careful when you distribute as well, or you will waste power.
+
 This example demonstrates controlling the Debug Key's LED with the button.
 
 ```verilog
