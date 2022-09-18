@@ -17,7 +17,7 @@ When possible, IPs will be provided with test benches.
 | sound_i2s.sv     | Provides audio over the i2s bridge. Supports signed and unsigned audio                                              |
 
 ### Debug Key
-This example demonstrates controlling the Debug Key's LED with the button also on the key.
+This example demonstrates controlling the Debug Key's LED with the button.
 
 ```verilog
 wire LED;
