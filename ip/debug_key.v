@@ -48,7 +48,7 @@ assign cart_tran_bank3_dir = 1'b0;
 // Pin 4 is LED.
 assign cart_tran_bank0[5]  = LED;
 
-// Pin 6 is button, we invert since button is high always high.
+// Pin 6 is button, we invert since button is always high.
 assign button              = ~cart_tran_bank3[0];
 
 endmodule
