@@ -63,6 +63,7 @@ Only open source cores are provided here. You can see the complete list at https
 | Neo Geo        | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
 | PDP-1          | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
 | Pong           | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
+| SNES           | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-SNES                |
 | Space Race     | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-spacerace       |
 | Super Breakout | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-superbreakout   |
 | Tecmo          | [nullobject](https://github.com/nullobject)   | https://github.com/nullobject/openfpga-tecmo          |       
