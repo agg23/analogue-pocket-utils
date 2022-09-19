@@ -58,6 +58,7 @@ Only open source cores are provided here. You can see the complete list at https
 |----------------|-----------------------------------------------|-------------------------------------------------------|
 | Arduboy        | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-arduboy             |
 | Asteroids      | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-asteroids       |
+| Dominos        | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-dominos         |
 | Lunar Lander   | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-lunarlander     |
 | Neo Geo        | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
 | PDP-1          | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
