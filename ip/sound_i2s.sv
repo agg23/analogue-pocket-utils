@@ -45,7 +45,7 @@ module sound_i2s #(
   reg audgen_nextsamp;
 
   // generate MCLK = 12.288mhz with fractional accumulator
-  reg [21:0] audgen_accum;
+  reg [21:0] audgen_accum = 0;
   parameter [20:0] CYCLE_48KHZ = 21'd122880 * 2;
   always @(posedge clk_74a) begin
     audgen_accum <= audgen_accum + CYCLE_48KHZ;
@@ -76,6 +76,9 @@ module sound_i2s #(
   localparam CHANNEL_LEFT_HIGH = SIGNED_INPUT ? 16 : 15;
   localparam CHANNEL_RIGHT_HIGH = 16 + CHANNEL_LEFT_HIGH;
 
+  // Width of channel with signed component
+  localparam SIGNED_CHANNEL_WIDTH = SIGNED_INPUT ? CHANNEL_WIDTH : CHANNEL_WIDTH + 1;
+
   wire [31:0] audgen_sampdata;
 
   assign audgen_sampdata[CHANNEL_LEFT_HIGH-1:CHANNEL_LEFT_HIGH-CHANNEL_WIDTH]   = audio_l;
@@ -90,9 +93,9 @@ module sound_i2s #(
   endgenerate
 
   generate
-    if (31 - CHANNEL_WIDTH > 16) begin
-      assign audgen_sampdata[31-CHANNEL_WIDTH:16] = 0;
-      assign audgen_sampdata[15-CHANNEL_WIDTH:0]  = 0;
+    if (15 - SIGNED_CHANNEL_WIDTH > 0) begin
+      assign audgen_sampdata[31-SIGNED_CHANNEL_WIDTH:16] = 0;
+      assign audgen_sampdata[15-SIGNED_CHANNEL_WIDTH:0]  = 0;
     end
   endgenerate
 
