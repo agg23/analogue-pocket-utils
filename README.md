@@ -40,6 +40,10 @@ debug_key key (
 
 ## Tools
 
+### CHIP32
+
+* https://github.com/agg23/openfpga-chip32-sim - Simulator for the CHIP32 VM
+
 ### Image Processing
 
 * https://github.com/agg23/Analogue-Pocket-Image-Process - Small Node project to create and extract APF image bins
