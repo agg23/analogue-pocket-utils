@@ -58,16 +58,30 @@ debug_key key (
 
 Only open source cores are provided here. You can see the complete list at https://joshcampbell191.github.io/openfpga-cores-inventory/analogue-pocket.html
 
+### Arcade
+
+| Core           | Author                                        | URL                                                   |
+|----------------|-----------------------------------------------|-------------------------------------------------------|
+| Asteroids      | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-asteroids       |
+| Dig Dug        | [boogermann](https://github.com/boogermann)   | https://github.com/opengateware/arcade-digdug         |
+| Dominos        | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-dominos         |
+| Galaga         | [boogermann](https://github.com/boogermann)   | https://github.com/opengateware/arcade-galaga         |
+| Green Beret    | [boogermann](https://github.com/boogermann)   | https://github.com/opengateware/arcade-gberet         |
+| Lunar Lander   | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-lunarlander     |
+| Pong           | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
+| Space Race     | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-spacerace       |
+| Super Breakout | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-superbreakout   |
+| Tecmo          | [nullobject](https://github.com/nullobject)   | https://github.com/nullobject/openfpga-tecmo          |
+| Xevious        | [boogermann](https://github.com/boogermann)   | https://github.com/opengateware/arcade-xevious        |    
+
+
+### Console/Handheld
+
 | Core           | Author                                        | URL                                                   |
 |----------------|-----------------------------------------------|-------------------------------------------------------|
 | Arduboy        | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-arduboy             |
-| Asteroids      | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-asteroids       |
-| Dominos        | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-dominos         |
-| Lunar Lander   | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-lunarlander     |
+| Genesis        | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openFPGA-Genesis         |
 | Neo Geo        | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
+| NES            | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-NES                 |
 | PDP-1          | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
-| Pong           | [agg23](https://github.com/agg23)             | https://github.com/agg23/analogue-pong                |
 | SNES           | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-SNES                |
-| Space Race     | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-spacerace       |
-| Super Breakout | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openfpga-superbreakout   |
-| Tecmo          | [nullobject](https://github.com/nullobject)   | https://github.com/nullobject/openfpga-tecmo          |       
