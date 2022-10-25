@@ -53,6 +53,7 @@ debug_key key (
 
 * https://github.com/mattpannella/pocket_core_autoupdate_net - C# updater
 * https://github.com/rivergillis/update-pocket - Python updater
+* https://gitlab.com/jgdigitaljedi/pocket-update-notifier - Node.js updater
 
 ## Cores
 
