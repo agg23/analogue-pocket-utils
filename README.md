@@ -58,7 +58,7 @@ debug_key key (
 
 ## Cores
 
-Only open source cores are provided here. You can see the complete list at https://joshcampbell191.github.io/openfpga-cores-inventory/analogue-pocket.html
+A sample of _open source_ cores are provided here. This list updates rapidly and is likely incomplete. You can see the complete list at https://joshcampbell191.github.io/openfpga-cores-inventory/analogue-pocket.html
 
 ### Arcade
 
@@ -86,4 +86,6 @@ Only open source cores are provided here. You can see the complete list at https
 | Neo Geo        | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
 | NES            | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-NES                 |
 | PDP-1          | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
+| PC Engine      | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-pcengine            |
+| Pokemon Mini   | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-pokemonmini         |
 | SNES           | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-SNES                |
