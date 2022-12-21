@@ -52,6 +52,7 @@ debug_key key (
 
 ### Updaters
 
+* https://github.com/RetroDriven/Pocket_Updater - Windows GUI
 * https://github.com/mattpannella/pocket_core_autoupdate_net - C# updater
 * https://github.com/rivergillis/update-pocket - Python updater
 * https://gitlab.com/jgdigitaljedi/pocket-update-notifier - Node.js updater
@@ -85,6 +86,7 @@ A sample of _open source_ cores are provided here. This list updates rapidly and
 | Genesis        | [ericlewis](https://github.com/ericlewis)     | https://github.com/ericlewis/openFPGA-Genesis         |
 | Neo Geo        | [Mazamars312](https://github.com/Mazamars312) | https://github.com/Mazamars312/Analogue_Pocket_Neogeo |
 | NES            | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-NES                 |
+| PC Engine      | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-pcengine            |
 | PDP-1          | [spacemen3](https://github.com/spacemen3)     | https://github.com/spacemen3/PDP-1                    |
 | PC Engine      | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-pcengine            |
 | Pokemon Mini   | [agg23](https://github.com/agg23)             | https://github.com/agg23/openfpga-pokemonmini         |
