@@ -106,8 +106,8 @@ module sound_i2s #(
       .clk_read (clk_74a),
 
       .write_en(write_en),
-      .data_in (audgen_sampdata),
-      .data_out(audgen_sampdata_s)
+      .data(audgen_sampdata),
+      .data_s(audgen_sampdata_s)
   );
 
   reg write_en = 0;
