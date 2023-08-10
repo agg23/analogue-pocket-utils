@@ -30,37 +30,43 @@
 //
 // Note: you will need to enable the cart power in your core.json for this to work.
 //
-module debug_key(
-    output  wire       cart_tran_bank0_dir,
-    inout   wire [7:4] cart_tran_bank0,
-    output  wire       cart_tran_bank3_dir,
-    inout   wire [7:0] cart_tran_bank3,
-    output  wire       cart_tran_pin31_dir,
-    inout   wire       cart_tran_pin31
-    input   wire       led,
-    output  wire       button,
-    input   wire       uart_tx,
-    output  wire       uart_rx
+module debug_key (
+    input wire clk,
+
+    output wire       cart_tran_bank0_dir,
+    inout  wire [7:4] cart_tran_bank0,
+    output wire       cart_tran_bank3_dir,
+    inout  wire [7:0] cart_tran_bank3,
+    output wire       cart_tran_pin31_dir,
+    inout  wire       cart_tran_pin31,
+    input  wire       led,
+    output wire       button,
+    input  wire       uart_tx,
+    output wire       uart_rx
 );
 
-// Enable bus output.
-// Note: UART uses this bank.
-assign cart_tran_bank0_dir = 1'b1;
+  // Enable bus output.
+  // Note: UART uses this bank.
+  assign cart_tran_bank0_dir = 1'b1;
 
-// Enable bus input.
-assign cart_tran_bank3_dir = 1'b0;
-assign cart_tran_pin31_dir = 1'b0;
+  // Enable bus input.
+  assign cart_tran_bank3_dir = 1'b0;
+  assign cart_tran_pin31_dir = 1'b0;
 
-// Pin 4 is LED.
-assign cart_tran_bank0[5]  = led;
+  // Pin 4 is LED.
+  assign cart_tran_bank0[5]  = led;
 
-// Pin 6 is button, we invert since button is always high.
-assign button              = ~cart_tran_bank3[0];
+  // Pin 6 is button, we invert since button is always high.
+  assign button              = ~cart_tran_bank3[0];
 
-// Pin 3 is UART output
-assign cart_tran_bank0[6]  = uart_tx;
+  // Pin 3 is UART output
+  assign cart_tran_bank0[6]  = uart_tx;
 
-// Pin 31 is UART input
-assign cart_tran_pin31     = uart_rx;
+  // Pin 31 is UART input
+  synch_3 rx_synch (
+      cart_tran_pin31,
+      uart_rx,
+      clk
+  );
 
 endmodule
